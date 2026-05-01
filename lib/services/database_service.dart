@@ -18,7 +18,6 @@ class DatabaseService {
     return _firestore
         .collection(collection)
         .where('userId', isEqualTo: userId)
-        .orderBy('timestamp', descending: true) 
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => TodoModel.fromMap(doc.data(), doc.id))

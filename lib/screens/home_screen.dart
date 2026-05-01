@@ -45,9 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // NOVO: DIÁLOGO PARA EDITAR
   void _exibirDialogoEditar(TodoModel tarefa) {
-    _taskController.text = tarefa.titulo; // Já carrega o texto atual
+    _taskController.text = tarefa.titulo; 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
