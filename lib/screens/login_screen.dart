@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _carregando = false;
+  bool _isHovering = false;
 
   void _tentarLogar() async {
     setState(() => _carregando = true);
@@ -78,22 +79,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 25),
-                  // Input Group: E-mail
                   _buildInputLabel("E-mail"),
                   TextField(
                     controller: _emailController,
                     decoration: _inputStyle("Digite seu e-mail"),
                   ),
                   const SizedBox(height: 15),
-                  // Input Group: Senha
                   _buildInputLabel("Senha"),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
                     decoration: _inputStyle("Digite sua senha"),
                   ),
-                  const SizedBox(height: 30), // Aumentei um pouco o espaço já que removemos o link
-                  // Botão Login
+                  const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     height: 45,
@@ -117,15 +115,33 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const Text("Ainda não tem conta? ", 
                         style: TextStyle(color: Color(0xFF666666))),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                          );
-                        },
-                        child: const Text("Cadastre-se", 
-                          style: TextStyle(color: Color(0xFFA8A6FF), fontWeight: FontWeight.bold)),
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) => setState(() => _isHovering = true),
+                        onExit: (_) => setState(() => _isHovering = false),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: _isHovering ? Colors.grey[200] : Colors.transparent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              "Cadastre-se",
+                              style: TextStyle(
+                                color: Color(0xFFA8A6FF),
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

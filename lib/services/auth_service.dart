@@ -3,31 +3,48 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Stream<User?> get usuario {
-    return _auth.authStateChanges();
-  }
+  // LOGIN
+  Future<String?> logar(String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      return "Preencha todos os campos.";
+    }
 
-  Future<String?> cadastrar(String email, String password) async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
-      return null; 
-    } on FirebaseAuthException catch (e) {
-      return e.message; 
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return null; // Sucesso
+    } on FirebaseAuthException {
+      // Mensagem genérica de erro para não revelar se foi e-mail ou senha
+      return "Credenciais inválidas. Verifique e tente novamente.";
+    } catch (e) {
+      return "Ocorreu um erro inesperado.";
     }
   }
 
-  Future<String?> logar(String email, String password) async {
+  // REGISTRO
+  Future<String?> cadastrar(String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
+      return "Preencha todos os campos.";
+    }
+    if (password.length < 6) {
+      return "A senha deve ter pelo menos 6 caracteres.";
+    }
+
     try {
-      await _auth.signInWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
-      return null;
+      await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      return null; // Sucesso
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      switch (e.code) {
+        case 'email-already-in-use':
+          return "Este e-mail já está em uso.";
+        case 'invalid-email':
+          return "E-mail inválido.";
+        case 'weak-password':
+          return "A senha escolhida é muito fraca.";
+        default:
+          return "Erro no cadastro.";
+      }
+    } catch (e) {
+      return "Erro ao criar conta.";
     }
   }
 
