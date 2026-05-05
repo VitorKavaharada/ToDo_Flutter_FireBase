@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../models/todo_model.dart';
+import '../widgets/todo_item_widget.dart'; // Importação do novo widget
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,7 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final DatabaseService _dbService = DatabaseService();
   final TextEditingController _taskController = TextEditingController();
 
-  // DIÁLOGO PARA ADICIONAR
   void _exibirDialogoAdicionar() {
     _taskController.clear();
     showDialog(
@@ -83,7 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await _authService.sair();
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+              if (context.mounted) {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+              }
             },
           )
         ],
@@ -91,8 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder<List<TodoModel>>(
         stream: _dbService.getTarefas(user!.uid),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) return const Center(child: CircularProgressIndicator());
-          if (!snapshot.hasData || snapshot.data!.isEmpty) return const Center(child: Text("Nenhuma tarefa cadastrada."));
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text("Nenhuma tarefa cadastrada."));
+          }
 
           final tarefas = snapshot.data!;
 
@@ -100,30 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: tarefas.length,
             itemBuilder: (context, index) {
               final tarefa = tarefas[index];
-              return ListTile(
-                title: Text(
-                  tarefa.titulo,
-                  style: TextStyle(
-                    decoration: tarefa.pronto ? TextDecoration.lineThrough : null,
-                  ),
-                ),
-                leading: Checkbox(
-                  value: tarefa.pronto,
-                  onChanged: (valor) => _dbService.alternarStatus(tarefa.id, tarefa.pronto),
-                ),
-                trailing: Row( // Usamos um Row para ter dois botões no final
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () => _exibirDialogoEditar(tarefa),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () => _dbService.removerTarefa(tarefa.id),
-                    ),
-                  ],
-                ),
+              // Utilizando o widget customizado
+              return TodoItemWidget(
+                tarefa: tarefa,
+                onStatusChanged: (valor) => _dbService.alternarStatus(tarefa.id, tarefa.pronto),
+                onEdit: () => _exibirDialogoEditar(tarefa),
+                onDelete: () => _dbService.removerTarefa(tarefa.id),
               );
             },
           );
