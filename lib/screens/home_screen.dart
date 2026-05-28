@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 import '../models/todo_model.dart';
-import '../widgets/todo_item_widget.dart'; // Importação do novo widget
+import '../widgets/todo_item_widget.dart'; 
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
