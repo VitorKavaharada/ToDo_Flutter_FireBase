@@ -13,7 +13,6 @@ class AuthService {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return null; // Sucesso
     } on FirebaseAuthException {
-      // Mensagem genérica de erro para não revelar se foi e-mail ou senha
       return "Credenciais inválidas. Verifique e tente novamente.";
     } catch (e) {
       return "Ocorreu um erro inesperado.";
