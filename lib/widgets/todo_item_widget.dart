@@ -21,8 +21,16 @@ class TodoItemWidget extends StatelessWidget {
       title: Text(
         tarefa.titulo,
         style: TextStyle(
+          fontWeight: FontWeight.bold,
           decoration: tarefa.pronto ? TextDecoration.lineThrough : null,
           color: tarefa.pronto ? Colors.grey : Colors.black,
+        ),
+      ),
+      subtitle: Text(
+        "Estimativa: ${tarefa.estimativa}",
+        style: TextStyle(
+          fontSize: 12,
+          color: tarefa.pronto ? Colors.grey : Colors.blueGrey,
         ),
       ),
       leading: Checkbox(
