@@ -5,9 +5,10 @@ class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String collection = "tarefas";
 
-  Future<void> adicionarTarefa(String titulo, String userId) async {
+  Future<void> adicionarTarefa(String titulo,String estimativa, String userId) async {
     await _firestore.collection(collection).add({
       'titulo': titulo,
+      'estimativa': estimativa,
       'pronto': false,
       'userId': userId,
       'timestamp': FieldValue.serverTimestamp(),
@@ -32,9 +33,10 @@ class DatabaseService {
     await _firestore.collection(collection).doc(id).delete();
   }
 
-  Future<void> editarTarefa(String id, String novoTitulo) async {
+  Future<void> editarTarefa(String id, String novoTitulo, String novaEstimativa) async {
   await _firestore.collection(collection).doc(id).update({
     'titulo': novoTitulo,
+    'estimativa': novaEstimativa,
   });
 }
 }
