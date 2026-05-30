@@ -13,6 +13,7 @@ O projeto conta com um sistema completo de autenticação de usuários e persist
   - Editar títulos de tarefas já existentes.
   - Marcar tarefas como concluídas (aplicando efeito visual de texto riscado).
   - Excluir tarefas.
+  - Campo estimativa de tempo.
 - **Atualização em Tempo Real:** A lista de tarefas se atualiza instantaneamente na tela quando um dado é modificado.
 - **Interface:** Cards customizados, campos de texto padronizados e plano de fundo degradê.
 
